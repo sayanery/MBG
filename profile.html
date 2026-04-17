@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SiKAPAN - Profile</title>
+    <!-- Fonts and icons -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Main Styling -->
+    <link href="./src/style.css" rel="stylesheet" />
+</head>
+<body class="m-0 font-sans text-base antialiased font-normal bg-gray-50 text-slate-700">
+    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 pb-40">
+        <!-- Main Content -->
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <!-- Profile Card -->
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <!-- Profile Photo -->
+                <div class="flex flex-col items-center mb-6">
+                    <div class="relative mb-4">
+                        <img id="profilePhoto" src="https://via.placeholder.com/150?text=Foto" alt="Profile Photo" class="w-32 h-32 rounded-full object-cover border-4 border-indigo-200">
+                        <button onclick="showPhotoModal()" class="absolute bottom-0 right-0 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full p-3 transition shadow-lg">
+                            <i class="fas fa-camera text-lg"></i>
+                        </button>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-1" id="profileName">Nama Pengguna</h2>
+                    <p class="text-slate-600 text-sm">ID: <span id="profileId">-</span></p>
+                </div>
+
+                <hr class="my-6">
+
+                <!-- Edit Form -->
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Lengkap</label>
+                        <input type="text" id="editName" placeholder="Masukkan nama lengkap Anda" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Email</label>
+                        <input type="email" id="editEmail" placeholder="Masukkan email Anda" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Umur</label>
+                        <input type="number" id="editAge" placeholder="Masukkan umur Anda" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Berat Badan (kg)</label>
+                        <input type="number" id="editWeight" placeholder="Masukkan berat badan Anda" step="0.1" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Tinggi Badan (cm)</label>
+                        <input type="number" id="editHeight" placeholder="Masukkan tinggi badan Anda" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200">
+                    </div>
+
+                    <div class="flex gap-3 pt-4">
+                        <button onclick="saveProfile()" class="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 hover:shadow-lg text-white py-3 rounded-lg font-semibold transition">
+                            <i class="fas fa-save mr-2"></i>Simpan Perubahan
+                        </button>
+                        <button onclick="loadProfile()" class="flex-1 bg-gray-400 hover:bg-gray-500 text-white py-3 rounded-lg font-semibold transition">
+                            <i class="fas fa-redo mr-2"></i>Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="bg-white rounded-2xl shadow-md p-6 mt-6">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Statistik Anda</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4">
+                        <p class="text-slate-600 text-xs font-semibold mb-1">Total Scans</p>
+                        <p class="text-2xl font-bold text-indigo-600" id="totalScans">0</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4">
+                        <p class="text-slate-600 text-xs font-semibold mb-1">Rata-rata Kalori</p>
+                        <p class="text-2xl font-bold text-green-600" id="avgCalories">0 kcal</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg p-4">
+                        <p class="text-slate-600 text-xs font-semibold mb-1">BMI</p>
+                        <p class="text-2xl font-bold text-orange-600" id="bmiValue">-</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-red-50 to-pink-50 rounded-lg p-4">
+                        <p class="text-slate-600 text-xs font-semibold mb-1">Kategori BMI</p>
+                        <p class="text-sm font-bold text-red-600" id="bmiCategory">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Upload Modal -->
+    <div id="photoModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-lg max-w-2xl w-full p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-slate-800">Ubah Foto Profil</h2>
+                <button onclick="closePhotoModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <div class="mb-4">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-indigo-500 transition" onclick="document.getElementById('photoInput').click()">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                    <p class="font-semibold text-slate-700 mb-1">Pilih Foto</p>
+                    <p class="text-xs text-slate-600">atau drag dan drop foto di sini</p>
+                </div>
+                <input type="file" id="photoInput" class="hidden" accept="image/*" onchange="previewPhoto(event)">
+            </div>
+
+            <div id="photoPreview" class="hidden mb-4">
+                <p class="text-sm font-semibold text-slate-700 mb-2">Preview:</p>
+                <img id="previewImage" src="" alt="Preview" class="w-full rounded-lg max-h-64 object-cover">
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="uploadPhoto()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition">
+                    <i class="fas fa-check mr-2"></i>Gunakan Foto Ini
+                </button>
+                <button onclick="closePhotoModal()" class="flex-1 bg-gray-400 hover:bg-gray-500 text-white py-3 rounded-lg font-semibold transition">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white z-50 border-t-4 border-indigo-600 shadow-2xl">
+        <div class="flex justify-center items-center gap-8 h-28 px-4">
+            <!-- Home -->
+            <a href="./index.html" class="flex flex-col items-center justify-center text-gray-600 hover:text-indigo-600 transition-colors p-4 rounded-3xl hover:bg-gray-50" title="Home">
+                <i class="fas fa-home text-5xl"></i>
+            </a>
+
+            <!-- Foto -->
+            <a href="./foto.html" class="flex flex-col items-center justify-center text-gray-600 hover:text-indigo-600 transition-colors p-4 rounded-3xl hover:bg-gray-50" title="Foto">
+                <i class="fas fa-camera text-5xl"></i>
+            </a>
+
+            <!-- Profile -->
+            <a href="./profile.html" class="flex flex-col items-center justify-center text-indigo-600 bg-indigo-50 p-4 rounded-3xl transition-colors hover:shadow-lg hover:bg-indigo-100" title="Profile">
+                <i class="fas fa-user text-5xl"></i>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        let selectedPhotoData = null;
+
+        function loadProfile() {
+            const profile = JSON.parse(localStorage.getItem('userProfile')) || {
+                name: 'Nama Pengguna',
+                email: '',
+                age: '',
+                weight: '',
+                height: ''
+            };
+
+            document.getElementById('profileName').textContent = profile.name || 'Nama Pengguna';
+            document.getElementById('profileId').textContent = profile.id || 'ID-001';
+            document.getElementById('editName').value = profile.name || '';
+            document.getElementById('editEmail').value = profile.email || '';
+            document.getElementById('editAge').value = profile.age || '';
+            document.getElementById('editWeight').value = profile.weight || '';
+            document.getElementById('editHeight').value = profile.height || '';
+
+            if (profile.photo) {
+                document.getElementById('profilePhoto').src = profile.photo;
+            }
+
+            updateStatistics();
+        }
+
+        function saveProfile() {
+            const profile = {
+                id: 'ID-' + String(Math.floor(Math.random() * 10000)).padStart(3, '0'),
+                name: document.getElementById('editName').value || 'Nama Pengguna',
+                email: document.getElementById('editEmail').value,
+                age: document.getElementById('editAge').value,
+                weight: document.getElementById('editWeight').value,
+                height: document.getElementById('editHeight').value,
+                photo: selectedPhotoData || JSON.parse(localStorage.getItem('userProfile'))?.photo
+            };
+
+            localStorage.setItem('userProfile', JSON.stringify(profile));
+            alert('Profil berhasil disimpan!');
+            loadProfile();
+        }
+
+        function showPhotoModal() {
+            document.getElementById('photoModal').classList.remove('hidden');
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photoModal').classList.add('hidden');
+            document.getElementById('photoPreview').classList.add('hidden');
+            document.getElementById('photoInput').value = '';
+        }
+
+        function previewPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImage').src = e.target.result;
+                document.getElementById('photoPreview').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function uploadPhoto() {
+            const previewImage = document.getElementById('previewImage');
+            if (!previewImage.src) {
+                alert('Pilih foto terlebih dahulu');
+                return;
+            }
+
+            selectedPhotoData = previewImage.src;
+            document.getElementById('profilePhoto').src = previewImage.src;
+            closePhotoModal();
+        }
+
+        function updateStatistics() {
+            const history = JSON.parse(localStorage.getItem('scanHistory')) || [];
+            document.getElementById('totalScans').textContent = history.length;
+
+            // Calculate average calories
+            const avgCalories = history.length > 0 
+                ? Math.round(history.reduce((sum, item) => sum + (item.calories || 0), 0) / history.length)
+                : 0;
+            document.getElementById('avgCalories').textContent = avgCalories + ' kcal';
+
+            // Calculate BMI
+            const weight = parseFloat(document.getElementById('editWeight').value);
+            const height = parseFloat(document.getElementById('editHeight').value);
+
+            if (weight > 0 && height > 0) {
+                const heightM = height / 100;
+                const bmi = (weight / (heightM * heightM)).toFixed(1);
+                document.getElementById('bmiValue').textContent = bmi;
+
+                let category = '';
+                if (bmi < 18.5) category = 'Kurus';
+                else if (bmi < 25) category = 'Normal';
+                else if (bmi < 30) category = 'Gemuk';
+                else category = 'Obese';
+
+                document.getElementById('bmiCategory').textContent = category;
+            }
+        }
+
+        // Initialize
+        loadProfile();
+        
+        // Update statistics when weight or height changes
+        document.getElementById('editWeight').addEventListener('change', updateStatistics);
+        document.getElementById('editHeight').addEventListener('change', updateStatistics);
+    </script>
+</body>
+</html>
