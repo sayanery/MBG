@@ -1,194 +1,437 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SiKAPAN - Tracking Makanan</title>
-    <!-- Fonts and icons -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    <!-- Font Awesome Icons -->
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-    <!-- Main Styling -->
-    <link href="./src/style.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>NutriTrack – Reyna</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #eef1fb;
+      --blue-main: #6b7fe8;
+      --blue-dark: #4a5fc4;
+      --blue-light: #c4cbf5;
+      --blue-pale: #dde2f8;
+      --white: #ffffff;
+      --text-dark: #1e2240;
+      --text-mid: #4a4f72;
+      --text-light: #8b90b8;
+      --orange: #f47c3c;
+      --teal: #3cc4c4;
+      --wheat: #c89b3c;
+      --card-shadow: 0 4px 20px rgba(107,127,232,0.12);
+      --card-shadow-hover: 0 8px 32px rgba(107,127,232,0.22);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      font-family: 'Nunito', sans-serif;
+      color: var(--text-dark);
+    }
+
+    .phone {
+      width: 390px;
+      min-height: 844px;
+      margin: 32px auto;
+      background: var(--bg);
+      border-radius: 48px;
+      box-shadow: 0 24px 80px rgba(74,95,196,0.25), 0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 90px;
+      scroll-behavior: smooth;
+    }
+    .scroll-area::-webkit-scrollbar { display: none; }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px 20px;
+    }
+    .logo-wrap {
+      width: 48px; height: 48px;
+      background: var(--white);
+      border-radius: 14px;
+      display: grid; place-items: center;
+      box-shadow: var(--card-shadow);
+    }
+    .logo-wrap img { width: 32px; }
+    .greeting { font-size: 18px; font-weight: 800; color: var(--text-dark); }
+    .notif-btn {
+      width: 44px; height: 44px;
+      background: var(--white);
+      border-radius: 50%;
+      border: none; cursor: pointer;
+      display: grid; place-items: center;
+      box-shadow: var(--card-shadow);
+      transition: transform .2s;
+    }
+    .notif-btn:hover { transform: scale(1.08); }
+    .notif-btn svg { width: 20px; height: 20px; fill: var(--blue-main); }
+
+    .week-row {
+      display: flex;
+      gap: 6px;
+      padding: 0 20px 20px;
+      overflow-x: auto;
+    }
+    .week-row::-webkit-scrollbar { display: none; }
+    .day-btn {
+      flex: 1;
+      min-width: 44px;
+      background: var(--white);
+      border: none; cursor: pointer;
+      border-radius: 16px;
+      padding: 8px 0;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
+      box-shadow: var(--card-shadow);
+      transition: background .2s, transform .15s;
+    }
+    .day-btn:hover { transform: translateY(-2px); }
+    .day-btn.active {
+      background: linear-gradient(135deg, var(--blue-main), var(--blue-dark));
+      box-shadow: 0 6px 18px rgba(107,127,232,0.35);
+    }
+    .day-label { font-size: 10px; font-weight: 700; color: var(--text-light); letter-spacing: .3px; }
+    .day-btn.active .day-label { color: rgba(255,255,255,.75); }
+    .day-num { font-size: 18px; font-weight: 900; color: var(--text-dark); }
+    .day-btn.active .day-num { color: var(--white); }
+
+    .track-card {
+      margin: 0 16px 20px;
+      background: var(--white);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+      animation: fadeUp .5s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .track-title {
+      text-align: center;
+      font-size: 15px; font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+    }
+    .metrics-row {
+      display: flex; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .metric-box {
+      flex: 1;
+      background: var(--bg);
+      border-radius: 16px;
+      padding: 14px 10px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+      transition: transform .2s;
+    }
+    .metric-box:hover { transform: translateY(-2px); }
+    .metric-label { font-size: 12px; font-weight: 700; color: var(--text-mid); }
+    .metric-icon { width: 36px; height: 36px; }
+    .metric-val { font-size: 12px; font-weight: 700; color: var(--text-mid); }
+
+    .icon-flame path { stroke: var(--orange); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-egg circle { stroke: var(--teal); fill: none; stroke-width: 2; }
+    .icon-bread path { stroke: var(--wheat); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .add-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--blue-light), var(--blue-pale));
+      border: none; cursor: pointer;
+      border-radius: 14px;
+      padding: 14px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px; font-weight: 800;
+      color: var(--blue-dark);
+      letter-spacing: .3px;
+      transition: filter .2s, transform .15s;
+    }
+    .add-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .add-btn:active { transform: scale(.98); }
+
+    .history-section {
+      background: linear-gradient(160deg, var(--blue-dark) 0%, var(--blue-main) 100%);
+      border-radius: 32px 32px 0 0;
+      padding: 28px 20px 20px;
+      flex: 1;
+      min-height: 340px;
+    }
+    .history-title {
+      font-size: 17px; font-weight: 900;
+      color: var(--white);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .food-card {
+      background: rgba(255,255,255,.15);
+      backdrop-filter: blur(8px);
+      border-radius: 18px;
+      padding: 14px 16px;
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,.2);
+      transition: background .2s, transform .15s;
+      animation: fadeUp .4s ease both;
+    }
+    .food-card:nth-child(2) { animation-delay: .05s; }
+    .food-card:nth-child(3) { animation-delay: .1s; }
+    .food-card:hover { background: rgba(255,255,255,.22); transform: translateX(3px); }
+
+    .food-icon-wrap {
+      width: 40px; height: 40px; flex-shrink: 0;
+      background: rgba(255,255,255,.15);
+      border-radius: 12px;
+      display: grid; place-items: center;
+    }
+    .food-icon-wrap svg { width: 22px; height: 22px; }
+
+    .food-info { flex: 1; }
+    .food-name { font-size: 13px; font-weight: 800; color: var(--white); margin-bottom: 4px; }
+    .food-meta {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      font-size: 11px; font-weight: 700;
+      color: rgba(255,255,255,.75);
+      align-items: center;
+    }
+    .food-meta span { display: flex; align-items: center; gap: 3px; }
+    .dot-sep { color: rgba(255,255,255,.4); }
+
+    .bottom-nav {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 76px;
+      background: var(--white);
+      border-radius: 0 0 48px 48px;
+      display: flex;
+      align-items: center; justify-content: space-around;
+      box-shadow: 0 -4px 24px rgba(74,95,196,0.12);
+      padding: 0 20px;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 16px;
+      transition: background .2s;
+      border: none;
+      background: transparent;
+    }
+    .nav-item:hover { background: var(--blue-pale); }
+    .nav-item svg { width: 24px; height: 24px; fill: var(--text-light); }
+    .nav-item.active svg { fill: var(--blue-main); }
+    .nav-dot {
+      width: 6px; height: 6px;
+      background: var(--blue-main);
+      border-radius: 50%;
+    }
+    .nav-item:not(.active) .nav-dot { display: none; }
+
+    .nav-center {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--blue-main), var(--blue-dark));
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 16px rgba(107,127,232,.4);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .nav-center:hover { transform: scale(1.1); box-shadow: 0 6px 22px rgba(107,127,232,.5); }
+    .nav-center svg { width: 26px; height: 26px; fill: white; }
+
+    @media (max-width: 420px) {
+      .phone { width: 100%; border-radius: 0; margin: 0; min-height: 100dvh; }
+    }
+  </style>
 </head>
-<body class="m-0 font-sans text-base antialiased font-normal bg-gray-50 text-slate-700">
-    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 pb-40">
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-6 px-4">
-            <div class="max-w-6xl mx-auto">
-                <h1 class="text-2xl font-bold">MBG</h1>
-                <p class="text-blue-100 text-sm">Sistem Kalori & Panduan Nutrisi</p>
-            </div>
-        </div>
+<body>
 
-        <!-- Main Content -->
-        <div class="max-w-6xl mx-auto px-4 py-6">
-            <!-- Welcome Section -->
-            <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
-                <h2 class="text-xl font-bold text-slate-800 mb-2">Halo, Selamat Datang!</h2>
-                <p class="text-slate-600 text-sm">Mulai tracking makananmu dan pantau kalori harian</p>
-            </div>
+<div class="phone">
+  <div class="scroll-area">
 
-            <!-- Today's Card Tracking -->
-            <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-slate-800">Tracking Hari Ini</h3>
-                    <span class="text-sm text-slate-500" id="todayDate">17 Apr 2026</span>
-                </div>
-                
-                <div class="space-y-4">
-                    <!-- Calorie Progress -->
-                    <div>
-                        <div class="flex justify-between mb-2">
-                            <span class="text-sm font-semibold text-slate-700">Kalori Harian</span>
-                            <span class="text-sm font-bold text-indigo-600" id="calorieCount">0/2000 kcal</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full w-0 transition-all duration-300" id="calorieBar" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Protein Progress -->
-                    <div>
-                        <div class="flex justify-between mb-2">
-                            <span class="text-sm font-semibold text-slate-700">Protein</span>
-                            <span class="text-sm font-bold text-green-600" id="proteinCount">0/50 g</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div class="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full w-0 transition-all duration-300" id="proteinBar" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Carbs Progress -->
-                    <div>
-                        <div class="flex justify-between mb-2">
-                            <span class="text-sm font-semibold text-slate-700">Karbohidrat</span>
-                            <span class="text-sm font-bold text-orange-600" id="carbsCount">0/250 g</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div class="bg-gradient-to-r from-orange-500 to-amber-600 h-3 rounded-full w-0 transition-all duration-300" id="carbsBar" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="window.location.href='./foto.html'" class="w-full mt-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-shadow">
-                    <i class="fas fa-camera mr-2"></i>Tambah Makanan
-                </button>
-            </div>
-
-            <!-- Riwayat Scan Section -->
-            <div class="bg-white rounded-2xl shadow-md p-6">
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Riwayat Scan</h3>
-                
-                <div id="scanHistory" class="space-y-3">
-                    <!-- History items will be loaded here -->
-                    <div class="text-center py-8">
-                        <i class="fas fa-history text-4xl text-gray-300 mb-2"></i>
-                        <p class="text-slate-500 text-sm">Belum ada riwayat scan</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="header">
+      <div class="logo-wrap">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="10" fill="#eef1fb"/>
+          <path d="M16 26 C16 26 8 20 8 13 C8 9.13 11.58 6 16 6 C20.42 6 24 9.13 24 13 C24 20 16 26 16 26Z" fill="#6b7fe8" opacity=".3"/>
+          <path d="M16 26 C16 26 8 20 8 13 C8 9.13 11.58 6 16 6" stroke="#4a5fc4" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <line x1="16" y1="26" x2="16" y2="14" stroke="#4a5fc4" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="greeting">Selamat siang, Reyna!</span>
+      <button class="notif-btn" aria-label="Notifikasi">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" stroke="#6b7fe8" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+      </button>
     </div>
 
-    <!-- Mobile Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white z-50 border-t-4 border-indigo-600 shadow-2xl">
-        <div class="flex justify-center items-center gap-8 h-28 px-4">
-            <!-- Home -->
-            <a href="./index.html" class="flex flex-col items-center justify-center text-indigo-600 bg-indigo-50 p-4 rounded-3xl transition-colors hover:shadow-lg hover:bg-indigo-100" title="Home">
-                <i class="fas fa-home text-5xl"></i>
-            </a>
+    <div class="week-row">
+      <button class="day-btn"><span class="day-label">Sen</span><span class="day-num">1</span></button>
+      <button class="day-btn"><span class="day-label">Sel</span><span class="day-num">2</span></button>
+      <button class="day-btn"><span class="day-label">Rab</span><span class="day-num">3</span></button>
+      <button class="day-btn"><span class="day-label">Kam</span><span class="day-num">4</span></button>
+      <button class="day-btn active"><span class="day-label">Jum</span><span class="day-num">5</span></button>
+      <button class="day-btn"><span class="day-label">Sab</span><span class="day-num">6</span></button>
+      <button class="day-btn"><span class="day-label">Min</span><span class="day-num">7</span></button>
+    </div>
 
-            <!-- Foto -->
-            <a href="./foto.html" class="flex flex-col items-center justify-center text-gray-600 hover:text-indigo-600 transition-colors p-4 rounded-3xl hover:bg-gray-50" title="Foto">
-                <i class="fas fa-camera text-5xl"></i>
-            </a>
+    <div class="track-card">
+      <p class="track-title">Tracking Hari ini</p>
+      <div class="metrics-row">
 
-            <!-- Profile -->
-            <a href="./profile.html" class="flex flex-col items-center justify-center text-gray-600 hover:text-indigo-600 transition-colors p-4 rounded-3xl hover:bg-gray-50" title="Profile">
-                <i class="fas fa-user text-5xl"></i>
-            </a>
+        <div class="metric-box">
+          <span class="metric-label">Kalori</span>
+          <svg class="metric-icon icon-flame" viewBox="0 0 36 36">
+            <path d="M18 31c-6 0-10-4-10-9 0-4 2-7 5-10 0 4 2 5 4 5-1-3 1-7 4-9 0 4 4 6 4 10 2-1 2-4 2-4 2 2 3 5 3 8 0 5-4 9-12 9z"/>
+          </svg>
+          <span class="metric-val">0/2000 Kcal</span>
         </div>
-    </nav>
 
-    <script>
-        // Set today's date
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        const today = new Date().toLocaleDateString('id-ID', options);
-        document.getElementById('todayDate').textContent = today;
+        <div class="metric-box">
+          <span class="metric-label">Protein</span>
+          <svg class="metric-icon icon-egg" viewBox="0 0 36 36">
+            <ellipse cx="18" cy="20" rx="9" ry="11"/>
+            <circle cx="18" cy="20" r="4"/>
+          </svg>
+          <span class="metric-val">0/500 Gr</span>
+        </div>
 
-        // Load scan history from localStorage
-        function loadScanHistory() {
-            const history = JSON.parse(localStorage.getItem('scanHistory')) || [];
-            const historyContainer = document.getElementById('scanHistory');
-            
-            if (history.length === 0) {
-                historyContainer.innerHTML = `
-                    <div class="text-center py-8">
-                        <i class="fas fa-history text-4xl text-gray-300 mb-2"></i>
-                        <p class="text-slate-500 text-sm">Belum ada riwayat scan</p>
-                    </div>
-                `;
-                return;
-            }
+        <div class="metric-box">
+          <span class="metric-label">Karbo</span>
+          <svg class="metric-icon icon-bread" viewBox="0 0 36 36">
+            <path d="M8 20 C8 14 10 10 18 10 C26 10 28 14 28 20 L28 26 Q18 28 8 26 Z"/>
+            <path d="M12 10 Q14 6 18 6 Q22 6 24 10"/>
+            <line x1="13" y1="18" x2="23" y2="18"/>
+            <line x1="13" y1="22" x2="23" y2="22"/>
+          </svg>
+          <span class="metric-val">0/500 Gr</span>
+        </div>
 
-            historyContainer.innerHTML = history.slice(0, 5).map(item => `
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <div>
-                        <p class="font-semibold text-slate-800 text-sm">${item.name}</p>
-                        <p class="text-xs text-slate-500">${item.time} • ${item.calories} kcal</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-xs font-semibold text-indigo-600">${item.method}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
+      </div>
+      <button class="add-btn">Tambah Asupan</button>
+    </div>
 
-        // Update nutrition summary
-        function updateNutritionSummary() {
-            const history = JSON.parse(localStorage.getItem('scanHistory')) || [];
-            const today = new Date().toDateString();
-            
-            let totalCalories = 0;
-            let totalProtein = 0;
-            let totalCarbs = 0;
+    <div class="history-section">
+      <p class="history-title">Riwayat Makanan kamu</p>
 
-            history.forEach(item => {
-                if (new Date(item.date).toDateString() === today) {
-                    totalCalories += item.calories || 0;
-                    totalProtein += item.protein || 0;
-                    totalCarbs += item.carbs || 0;
-                }
-            });
+      <div class="food-card">
+        <div class="food-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+          </svg>
+        </div>
+        <div class="food-info">
+          <p class="food-name">Nasi Goreng &amp; Telur Goreng</p>
+          <div class="food-meta">
+            <span>🔥 1000 Kcal</span>
+            <span class="dot-sep">|</span>
+            <span>⚪ 18 gr</span>
+            <span class="dot-sep">|</span>
+            <span>🍞 18 gr</span>
+          </div>
+        </div>
+      </div>
 
-            document.getElementById('calorieCount').textContent = `${totalCalories}/2000 kcal`;
-            document.getElementById('proteinCount').textContent = `${totalProtein}/50 g`;
-            document.getElementById('carbsCount').textContent = `${totalCarbs}/250 g`;
+      <div class="food-card">
+        <div class="food-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+          </svg>
+        </div>
+        <div class="food-info">
+          <p class="food-name">Nasi Goreng &amp; Telur Goreng</p>
+          <div class="food-meta">
+            <span>🔥 1000 Kcal</span>
+            <span class="dot-sep">|</span>
+            <span>⚪ 18 gr</span>
+            <span class="dot-sep">|</span>
+            <span>🍞 18 gr</span>
+          </div>
+        </div>
+      </div>
 
-            document.getElementById('calorieBar').style.width = Math.min((totalCalories / 2000) * 100, 100) + '%';
-            document.getElementById('proteinBar').style.width = Math.min((totalProtein / 50) * 100, 100) + '%';
-            document.getElementById('carbsBar').style.width = Math.min((totalCarbs / 250) * 100, 100) + '%';
-        }
+      <div class="food-card">
+        <div class="food-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+          </svg>
+        </div>
+        <div class="food-info">
+          <p class="food-name">Nasi Goreng &amp; Telur Goreng</p>
+          <div class="food-meta">
+            <span>🔥 1000 Kcal</span>
+            <span class="dot-sep">|</span>
+            <span>⚪ 18 gr</span>
+            <span class="dot-sep">|</span>
+            <span>🍞 18 gr</span>
+          </div>
+        </div>
+      </div>
 
-        // Update active navigation
-        function updateActiveNav() {
-            document.querySelectorAll('.link-nav-mobile').forEach(link => {
-                link.classList.remove('active');
-            });
-            document.querySelector('.link-nav-mobile[href="./index.html"]').classList.add('active');
-        }
+    </div>
 
-        // Initialize
-        loadScanHistory();
-        updateNutritionSummary();
-        updateActiveNav();
+  </div>
 
-        // Refresh every 30 seconds
-        setInterval(() => {
-            loadScanHistory();
-            updateNutritionSummary();
-        }, 30000);
-    </script>
+  <nav class="bottom-nav">
+    <button class="nav-item active" aria-label="Beranda">
+      <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/></svg>
+      <div class="nav-dot"></div>
+    </button>
+    
+    <button class="nav-center" onclick="window.location.href='scan.html'" aria-label="Scan makanan">
+      <svg viewBox="0 0 24 24">
+        <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <circle cx="12" cy="12" r="3" fill="white"/>
+      </svg>
+    </button>
+    
+    <button class="nav-item" onclick="window.location.href='profile.html'" aria-label="Profil">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+      <div class="nav-dot"></div>
+    </button>
+  </nav>
+
+</div>
+
+<script>
+  document.querySelectorAll('.day-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  document.querySelector('.add-btn').addEventListener('click', () => {
+    const btn = document.querySelector('.add-btn');
+    btn.textContent = '✓ Ditambahkan!';
+    btn.style.background = 'linear-gradient(135deg, #a8f0c6, #c6f5d8)';
+    btn.style.color = '#1a7a4a';
+    setTimeout(() => {
+      btn.textContent = 'Tambah Asupan';
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 1500);
+  });
+</script>
+
 </body>
 </html>
